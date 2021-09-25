@@ -48,7 +48,7 @@ export default function Home() {
     const videoInputDevices = await BrowserQRCodeReader.listVideoInputDevices()
 
     const raw = await codeReader.decodeFromVideoDevice(
-      videoInputDevices[0].deviceId,
+      videoInputDevices[1].deviceId,
       videoInput.current,
       async (result, error, controls) => {
         console.error(error)
