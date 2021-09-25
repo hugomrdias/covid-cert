@@ -106,7 +106,6 @@ export default function Home() {
       }
 
       // TODO if no result throw
-
       const value = {
         image: await createSVG(result.text),
         data: parseQr(result.text),
@@ -122,7 +121,6 @@ export default function Home() {
       <Typography variant="h5" gutterBottom>
         Wallet
       </Typography>
-
       {certs ? (
         <>
           <List>

@@ -28,9 +28,23 @@ export function readFileAsDataURL(file) {
 export async function readFileAsBuffer(file) {
   const buf = await file.arrayBuffer()
   const { BrowserQRCodeReader } = await import('@zxing/browser')
-  const codeReader = new BrowserQRCodeReader()
+  const { DecodeHintType } = await import('@zxing/library')
+  const hints = new Map()
+  hints.set(DecodeHintType.TRY_HARDER, true)
+
+  const codeReaderEasy = new BrowserQRCodeReader()
+  const codeReaderHarder = new BrowserQRCodeReader(hints)
   const canvas = await getPdf(new Uint8Array(buf))
-  return codeReader.decodeFromCanvas(canvas)
+  try {
+    return codeReaderEasy.decodeFromCanvas(canvas)
+  } catch (err) {
+    try {
+      return codeReaderHarder.decodeFromCanvas(canvas)
+    } catch (err) {
+      console.error(err)
+      return
+    }
+  }
 }
 
 /**
@@ -66,7 +80,6 @@ async function getPdf(data) {
 export async function createSVG(qrCodeData) {
   const { BrowserQRCodeSvgWriter } = await import('@zxing/browser')
   const codeWriter = new BrowserQRCodeSvgWriter()
-
   const svg = codeWriter.write(qrCodeData, 300, 300)
   var xml = new XMLSerializer().serializeToString(svg)
   return 'data:image/svg+xml;base64,' + btoa(xml)

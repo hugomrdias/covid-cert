@@ -45,14 +45,17 @@ export default function Home() {
   async function onScan() {
     // setQRData()
     const codeReader = new BrowserQRCodeReader()
+    const videoInputDevices = await BrowserQRCodeReader.listVideoInputDevices()
+
     const raw = await codeReader.decodeFromVideoDevice(
-      undefined,
+      videoInputDevices[2].deviceId,
       videoInput.current,
-      (result, error, controls) => {
+      async (result, error, controls) => {
+        console.error(error)
         if (result) {
           controls.stop()
           setOpen(true)
-          setQRSVG(createSVG(result.text))
+          setQRSVG(await createSVG(result.text))
           setQRHash(result.text)
           setQRData(parseQr(result.text))
         }
