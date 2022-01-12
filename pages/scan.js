@@ -28,6 +28,13 @@ const useStyles = makeStyles((theme) => ({
   extendedIcon: {
     marginRight: theme.spacing(1),
   },
+  video: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    maxWidth: '100%',
+    transform: 'translate(-50%, -50%)',
+  },
 }))
 
 export default function Home() {
@@ -48,7 +55,7 @@ export default function Home() {
     const videoInputDevices = await BrowserQRCodeReader.listVideoInputDevices()
 
     const raw = await codeReader.decodeFromVideoDevice(
-      videoInputDevices[1].deviceId,
+      videoInputDevices[0].deviceId,
       videoInput.current,
       async (result, error, controls) => {
         console.error(error)
@@ -75,7 +82,12 @@ export default function Home() {
       <Typography variant="h5" gutterBottom>
         Scan
       </Typography>
-      <video ref={videoInput} width="100%" height="400px"></video>
+      <video
+        ref={videoInput}
+        width="400px"
+        height="400px"
+        className={classes.video}
+      ></video>
       {QRData && (
         <DataList
           open={open}
